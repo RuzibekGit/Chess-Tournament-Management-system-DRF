@@ -7,8 +7,7 @@ from users.views import (SignUpCreateAPIView,
                          ForgetPasswordView,
                          UserUpdateAPIView,
                          PasswordUpdateAPIView,
-                         RefreshTokenView,
-                         UserDataAPIView)
+                         RefreshTokenView)
 
 
 app_name = 'users'
@@ -26,6 +25,5 @@ urlpatterns = [
     path('confirm/password/', PasswordUpdateAPIView.as_view(), name='update-password'),
 
     path('update/', UserUpdateAPIView.as_view(), name='update'),
-    path('my-account/', UserDataAPIView.as_view(), name='user-data'),
 
 ]

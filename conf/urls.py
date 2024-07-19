@@ -22,6 +22,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from users.views import UserDataAPIView
 
 
 schema_view = get_schema_view(
@@ -45,5 +46,7 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('api/v1/users/', include('users.urls', namespace='users')),
+    path('<str:username>/', UserDataAPIView.as_view(), name='my-acount'),
+
 
 ]

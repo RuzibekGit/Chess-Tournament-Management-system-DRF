@@ -21,7 +21,8 @@ from users.serializers import (SignUpSerializer,
                                ForgetPasswordSerializer,
                                UpdateUserSerializer,
                                UpdatePasswordSerializer,
-                               UserDataSerializer)
+                               UserDataSerializer,
+                               UserDataAllSerializer)
 
 
 
@@ -36,24 +37,27 @@ def return_error(message="Validation error!", http_request=status.HTTP_400_BAD_R
     return Response(response, status=http_request)
 
 
-class UserDataAPIView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = UserDataSerializer
 
-    def get(self, request, *args, **kwargs):
-        user = self.request.user
-        if user.auth_status == NEW:
-            response = {
-                "success": False,
-                "message": "You do not have permission to access"
-            }
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        return super().get(request, *args, **kwargs)
+
+class UserDataAPIView(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = UserDataSerializer
+    lookup_field = 'username'
+
+    def get_queryset(self):
+        user = self.kwargs.get('username')
+        if self.request.user.is_authenticated:
+            self.serializer_class = UserDataAllSerializer         
+
+        return UserModel.objects.filter(username=user)
 
     def get_object(self):
-        return self.request.user
-
-
+        queryset = self.get_queryset()
+        obj = queryset.first()
+        if not obj:
+            return return_error(message="User not found", http_request=status.HTTP_404_NOT_FOUND)
+        return obj
+    
         
 
 # -------------------------- Registration -------------------------------
@@ -62,9 +66,6 @@ class SignUpCreateAPIView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = SignUpSerializer
     model = UserModel
-
-
-
     
 # endregion
 
@@ -73,17 +74,6 @@ class SignUpCreateAPIView(generics.CreateAPIView):
 # region log in
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
-
-    # def post(self, request, *args, **kwargs):
-    #     response = super().post(request, *args, **kwargs)
-    #     if request.user.is_authenticated:
-    #         last_activity = request.user.last_activity
-    #         now = timezone.now()
-    #         if (now - last_activity).total_seconds() < 300:  # 5 minutes
-    #             access_token = RefreshToken.for_user(request.user).access_token
-    #             access_token.set_exp(lifetime=timedelta(minutes=5))
-    #             response.data['access'] = str(access_token)
-    #     return response
 
 # endregion
 

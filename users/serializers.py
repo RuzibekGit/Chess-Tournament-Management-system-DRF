@@ -33,11 +33,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-class UserDataSerializer(serializers.ModelSerializer):
+class UserDataAllSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         exclude = ['password', "is_superuser", "is_staff",
                    "uuid", "groups", "user_permissions"]
+        
+
+class UserDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = ['first_name', 'last_name', 'country', 'rating']
 
 
 # ----------------------- SignUp ------------------------------
