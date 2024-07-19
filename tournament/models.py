@@ -14,7 +14,7 @@ class TournamentModel(BaseModel):
 
     name = models.CharField(max_length=128, unique=True)
 
-    start_date = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
     participants = models.ManyToManyField(UserModel)

@@ -45,8 +45,10 @@ urlpatterns = [
 
 
     path('admin/', admin.site.urls),
-    path('api/v1/users/', include('users.urls', namespace='users')),
     path('<str:username>/', UserDataAPIView.as_view(), name='my-acount'),
+    
+    path('api/v1/users/', include('users.urls', namespace='users')),
+    path('api/v1/admin/', include('admin.urls', namespace='admins')),
 
 
 ]
