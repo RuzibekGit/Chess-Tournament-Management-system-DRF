@@ -9,7 +9,8 @@
 
 
 
-This project is a Chess Tournament Management System built using Django REST Framework (DRF). It allows users to create and manage chess tournaments, register participants, and track match results.
+This project is a Chess Tournament Management System built using Django REST Framework (DRF). It enables users to create and manage accounts, while Admin users have the capability to create chess tournaments, register participants, and track match results. The system is designed to automatically send emails when tournaments start or end. 
+Additionally, when an Admin adds a round, the application automatically generates match pairings using the Swiss system principle.
 
 ## Features
 
