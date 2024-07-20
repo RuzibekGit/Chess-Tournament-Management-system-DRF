@@ -56,7 +56,7 @@ pip install -r requirements.txt # Install Dependencies
 
   - Postman API  <a href="https://documenter.getpostman.com/view/36448688/2sA3kUGhfJ">documentation</a> or ⬇️
 
-  - Postman Collection API Link  ```https://api.postman.com/collections/36448688-0f441b28-08e8-4129-83da-23d016354512?access_key=PMAT-01J38NKD864K5WT21MGHXD8SE9``` just copy and enter Import link section
+  - Postman Collection API Link  ```https://api.postman.com/collections/36448688-0f441b28-08e8-4129-83da-23d016354512?access_key=PMAT-01J38NKD864K5WT21MGHXD8SE9``` just copy and enter **Import** link section
 
 
 ### Important!!!! 
