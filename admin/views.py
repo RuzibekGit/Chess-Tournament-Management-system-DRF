@@ -1,19 +1,18 @@
 from rest_framework import generics, status
-from django.utils import timezone
 from rest_framework.response import Response
 
-from shared.utils import send_code_to_email
 from users.models import UserModel, ADMIN
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 
 from admin.serializers import (UserListSerializer,
                                AboutUserSerializer,
                                CreateUpdateTournamentSerializer,
-                               RoundsModelSerializer)
+                               RoundsModelSerializer, 
+                               MatchResultSerializer)
 
 from shared.pagination import CustomPagination
 from users.views import return_error
-from tournament.models import TournamentModel, RoundsModel
+from tournament.models import TournamentModel, RoundsModel, MatchModel
 
 
 #________________________________________________________________________ #
@@ -21,6 +20,9 @@ from tournament.models import TournamentModel, RoundsModel
 
 # region create tournament
 class CreateTournamentView(generics.CreateAPIView):
+    """
+    This class for creating a new tournament! * Only Admin users can create a new tournament.
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = CreateUpdateTournamentSerializer
     model = TournamentModel
@@ -61,6 +63,9 @@ class UpdateTournamentView(generics.UpdateAPIView):
     serializer_class = CreateUpdateTournamentSerializer
     http_method_names = ['put', 'patch']
 
+    def get_queryset(self):
+        return TournamentModel.objects.all()
+    
     def get_object(self):
         if self.request.user.user_role != ADMIN:
             return return_error(
@@ -74,7 +79,7 @@ class UpdateTournamentView(generics.UpdateAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)  # Call for actual update
+        self.perform_update(serializer) 
 
         # Return serializer's data as response
         return Response(serializer.data)
@@ -84,15 +89,30 @@ class UpdateTournamentView(generics.UpdateAPIView):
         serializer = self.get_serializer(
             instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)  # Call for actual update
+        self.perform_update(serializer)  
 
         return Response(serializer.data)
 
 # endregion
 
+# region create tournament
+class MatchResultUpdateView(generics.UpdateAPIView):
+    """
+    For updating the match result, only admin users can update
+    """
+    queryset = MatchModel.objects.all()
+    serializer_class = MatchResultSerializer
+    permission_classes = [IsAuthenticated]
 
-
-
+    def get_object(self):
+        if self.request.user.user_role != ADMIN:
+            return return_error(
+                message="You do not have permission to update a match!",
+                http_request=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        return MatchModel.objects.get(id=self.kwargs['pk'])
+# endregion
 # _________________________________________________________________________ #
 # --------------------------- Users Update -------------------------------- #
 
@@ -120,3 +140,6 @@ class AdminListView(generics.ListAPIView):
             return UserModel.objects.filter(id=pk)
         return UserModel.objects.all()
 # endregion
+
+
+

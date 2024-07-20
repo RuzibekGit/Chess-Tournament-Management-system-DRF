@@ -8,14 +8,24 @@ from decouple import config
 from conf.settings import DEFAULT_FROM_EMAIL, EMAIL_HOST_USER
 
 
-
-
-def send_code_to_email(email, code, name="Dude"):
+def send_code_to_email(
+        email, 
+        code, 
+        name="Dude", 
+        subject="Activation Code", 
+        heder="Verify your email address!",
+        main_text="Thanks for signing up for E-Commerce ! We're excited to have you as an early user."
+        ):
     def send_in_thread():
-        subject = "Activation Code"
-        from_email = f"E-Commerce <{EMAIL_HOST_USER}>"
+        data = {
+            "code": code, 
+            "name": name,
+            "heder": heder,
+            "main_text": main_text
+            }
+        from_email = f"Chess-Tour <{EMAIL_HOST_USER}>"
         to = email
-        html_content = render_to_string('email-reply/verify-email.html', {"code":code, "name":name})
+        html_content = render_to_string('email-reply/verify-email.html', data)
         text_content = strip_tags(html_content)
 
         msg = EmailMultiAlternatives(subject, text_content, from_email, [to], reply_to=["ruzibek.off!gmail.com"])
