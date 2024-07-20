@@ -55,7 +55,6 @@ pip install -r requirements.txt # Install Dependencies
 #### Also you can use my postman collection
   
 
-
 ### Important!!!! 
  - Before using this collection  add new variable, im using ```{ my_urls }``` instead of ```http://127.0.0.1:8000``` 
 
