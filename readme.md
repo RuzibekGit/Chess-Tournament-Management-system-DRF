@@ -53,7 +53,7 @@ pip install -r requirements.txt # Install Dependencies
 <img src="assets/images/Screenshot 2024-07-20 215759.png" alt="" style="height: ; width: ;">
 
 #### Also you can use my postman collection
-  ```https://documenter.getpostman.com/view/36448688/2sA3kUGhfJ```
+  
 
 
 ### Important!!!! 
