@@ -223,4 +223,11 @@ class MatchResultSerializer(serializers.ModelSerializer):
         model = MatchModel
         fields = ['result']
 
+    def to_representation(self, instance):
+        data = {
+            "success": True,
+            "message": f"Match successfully updated !  ",
+            "result": instance.result
+        }
 
+        return data

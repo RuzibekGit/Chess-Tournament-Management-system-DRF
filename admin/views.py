@@ -111,7 +111,12 @@ class MatchResultUpdateView(generics.UpdateAPIView):
                 http_request=status.HTTP_401_UNAUTHORIZED
             )
         
-        return MatchModel.objects.get(id=self.kwargs['pk'])
+        if not (data := MatchModel.objects.get(id=self.kwargs['pk'])):
+            return return_error(
+                message="This match not found",
+                http_request=status.HTTP_404_NOT_FOUND
+            )
+        return data
 # endregion
 # _________________________________________________________________________ #
 # --------------------------- Users Update -------------------------------- #
