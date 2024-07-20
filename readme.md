@@ -111,3 +111,8 @@ If you have a collection API link like `https://www.getpostman.com/collections/y
 
 For more detailed instructions and advanced features, you can refer to the [Postman Learning Center](https://learning.postman.com/docs/collections/using-collections/).
 
+
+
+### ERD For DataBase 
+
+<img src="assets\images\Screenshot 2024-07-21 014449.png" alt="" style="height: ; width: ;">
