@@ -48,15 +48,16 @@ pip install -r requirements.txt # Install Dependencies
 
 
 ## API Documentation 
-
-#### your-domain/swagger/
+### Use swagger
+Enter ```swagger/``` after your local domain
+``` your-domain/swagger/```
 <img src="assets/images/Screenshot 2024-07-20 215759.png" alt="" style="height: ; width: ;">
 
 <h2 style="color: #03fc35;"> Also you can use my postman collection </h2>
 
   - Postman API  <a href="https://documenter.getpostman.com/view/36448688/2sA3kUGhfJ">documentation</a> or ⬇️
 
-  - Postman Collection API Link  ```https://api.postman.com/collections/36448688-0f441b28-08e8-4129-83da-23d016354512?access_key=PMAT-01J38NKD864K5WT21MGHXD8SE9``` just copy and enter **Import** link section
+  - Postman Collection API Link  ```https://api.postman.com/collections/36448688-0f441b28-08e8-4129-83da-23d016354512?access_key=PMAT-01J38NKD864K5WT21MGHXD8SE9``` just copy and enter **Import** link section in your PostMan
 
 
 ### Important!!!! 
