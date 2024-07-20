@@ -44,7 +44,11 @@ pip install -r requirements.txt # Install Dependencies
 
 ## Add and Configure the .env file
 
+ - Create an .env file using example.env  and enter the necessary keys
 
 
+## API Documentation 
 
+#### your-domain/swagger/
+<img src="assets/images/Screenshot 2024-07-20 215759.png" alt="" style="height: ; width: ;">
 
