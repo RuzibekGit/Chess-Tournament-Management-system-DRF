@@ -109,5 +109,5 @@ If you have a collection API link like `https://www.getpostman.com/collections/y
 
 ### Additional Resources
 
-For more detailed instructions and advanced features, you can refer to the [Postman Learning Center](https://learning.postman.com/docs/collections/using-collections/)[^1^][5].
+For more detailed instructions and advanced features, you can refer to the [Postman Learning Center](https://learning.postman.com/docs/collections/using-collections/).
 
