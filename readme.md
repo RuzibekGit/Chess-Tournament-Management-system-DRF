@@ -69,7 +69,6 @@ Enter ```swagger/``` after your local domain
 
 You can easily import a collection into Postman using a collection API link. Follow these steps to use a collection API link in Postman:
 
-### Steps to Import a Collection Using an API Link
 
 1. **Open Postman**:
    - Launch Postman on your computer.
@@ -94,22 +93,7 @@ You can easily import a collection into Postman using a collection API link. Fol
 
 If you have a collection API link like `https://www.getpostman.com/collections/your-collection-id`, follow the steps above to import it into Postman.
 
-### Using the Imported Collection
 
-1. **Access the Collection**:
-   - Once imported, you will see the collection listed in the left sidebar under the **Collections** tab.
-
-2. **Explore Requests**:
-   - Click on the collection name to expand it and view all the requests it contains.
-
-3. **Send Requests**:
-   - Select any request from the collection.
-   - Click the **Send** button to execute the request and view the response.
-
-
-### Additional Resources
-
-For more detailed instructions and advanced features, you can refer to the [Postman Learning Center](https://learning.postman.com/docs/collections/using-collections/).
 
 
 
