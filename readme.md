@@ -52,12 +52,13 @@ pip install -r requirements.txt # Install Dependencies
 #### your-domain/swagger/
 <img src="assets/images/Screenshot 2024-07-20 215759.png" alt="" style="height: ; width: ;">
 
-#### Also you can use my postman collection
+<div style="background: white; border-radius: 10px; padding: 5px;">
+<h2 style="color: #03fc35;"> Also you can use my postman collection </h2>
 
- - Postman API  <a href="https://documenter.getpostman.com/view/36448688/2sA3kUGhfJ">documentation</a> or ⬇️
+ <p> Postman API  <a href="https://documenter.getpostman.com/view/36448688/2sA3kUGhfJ">documentation</a> or ⬇️</p>
 
- - Postman Collection API Link ```https://api.postman.com/collections/36448688-0f441b28-08e8-4129-83da-23d016354512?access_key=PMAT-01J38NKD864K5WT21MGHXD8SE9```
-
+ <p> Postman Collection API Link  <strong>https://api.postman.com/collections/36448688-0f441b28-08e8-4129-83da-23d016354512?access_key=PMAT-01J38NKD864K5WT21MGHXD8SE9</strong></p>
+</div>
 
 ### Important!!!! 
  - Before using this collection  add new variable, im using ```{ my_urls }``` instead of ```http://127.0.0.1:8000``` 
