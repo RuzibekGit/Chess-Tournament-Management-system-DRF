@@ -5,6 +5,9 @@ from users.models import UserModel
 START_SOON, GOING_ON, ENDED = "START_SOON", "GOING_ON", "ENDED"
 
 
+
+# -------------------------- Tournament Model -------------------------------
+# region tournament
 class TournamentModel(BaseModel):
     TOUR_STATE = (
         (START_SOON, START_SOON),
@@ -26,31 +29,72 @@ class TournamentModel(BaseModel):
     class Meta:
         verbose_name = 'Tournament'
         verbose_name_plural = 'Tournaments'
+# endregion
 
 
-
-
+# -------------------------- Rounds Model -------------------------------
+# region round
 class RoundsModel(BaseModel):
-    rounds = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     tournament = models.ForeignKey(TournamentModel, on_delete=models.CASCADE, related_name="tour_rounds")
-    side_white = models.ForeignKey(UserModel, on_delete=models.SET_NULL, related_name="side_white", null=True)
-    side_black = models.ForeignKey(UserModel, on_delete=models.SET_NULL, related_name="side_black", null=True)
-
-    result = models.ForeignKey(UserModel, on_delete=models.SET_NULL, related_name="win_rounds", null=True)
-
-    data_for_ondelete = models.JSONField(blank=True, null=True)
-
 
     def __str__(self) -> str:
-        return self.result.first_name
+        return self.name
 
     class Meta:
         verbose_name = 'Round'
         verbose_name_plural = 'Rounds'
 
+
+    def write_round_id(self):
+        if not self.name:
+            self.name = f"{self.tournament.name} round - {self.tournament.tour_rounds.count()+1}"
+
+    # ------------------------------
+    def clean(self) -> None:
+        self.write_round_id()
+
+    # ------------------------------
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.clean()
+        super(RoundsModel, self).save(*args, **kwargs)
+# endregion
+
+
+# -------------------------- Match Model -------------------------------
+# region match
+class MatchModel(BaseModel):
+    rounds = models.CharField(max_length=50, blank=True, null=True)
+    which_round = models.ForeignKey(RoundsModel, on_delete=models.CASCADE, related_name="match_rounds")
+    tournament = models.ForeignKey(TournamentModel, on_delete=models.CASCADE, related_name="match_rounds")
+    side_white = models.ForeignKey(UserModel, on_delete=models.SET_NULL, related_name="side_white", null=True)
+    side_black = models.ForeignKey(UserModel, on_delete=models.SET_NULL, related_name="side_black", null=True)
+
+    result = models.SmallIntegerField(blank=True, null=True)
+
+    data_for_ondelete = models.JSONField(blank=True, null=True)
+
+
+    def __str__(self) -> str:
+        return self.rounds
+
+    class Meta:
+        verbose_name = 'Match'
+        verbose_name_plural = 'Matches'
+
     # --------------- Functions -----------------
     def write_ondelete(self):
         if not self.data_for_ondelete:
+            result = None
+            if self.result:
+                if self.result == 1:
+                    result = "white"
+                elif self.result == -1:
+                    result = "black"
+                else:
+                    result = "tie"
             self.data_for_ondelete = {
                 "white": {
                     "player": f"{self.side_white.first_name} {self.side_white.last_name}",
@@ -62,12 +106,12 @@ class RoundsModel(BaseModel):
                     "country": self.side_black.country,
                     "rating": self.side_black.rating
                 },
-                "who_win": "black" if self.result.first_name == self.side_black.first_name else "white"
+                "who_win": result
             }
 
-    def write_round_id(self):
+    def write_match_id(self):
         if not self.rounds:
-            self.rounds = f"{self.tournament.name} - {self.tournament.tour_rounds.count()+1}"
+            self.rounds = f"{self.which_round.name} match - {self.which_round.match_rounds.count()+1}"
 
 
     # this section is for returning data to admin panel
@@ -81,12 +125,12 @@ class RoundsModel(BaseModel):
     # ------------------------------
     def clean(self) -> None:
         self.write_ondelete()
-        self.write_round_id()
+        self.write_match_id()
 
 
     # ------------------------------
     def save(self, *args, **kwargs):
         if not self.pk:
             self.clean()
-        super(RoundsModel, self).save(*args, **kwargs)
-
+        super(MatchModel, self).save(*args, **kwargs)
+# endregion

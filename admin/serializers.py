@@ -7,6 +7,8 @@ from shared.utils import send_code_to_email
 from users.models import UserModel, ADMIN
 from tournament.models import TournamentModel, RoundsModel
 from users.serializers import raise_error
+from tournament.swiss_system import match_generator
+
 
 
 
@@ -34,7 +36,7 @@ class AboutUserSerializer(serializers.ModelSerializer):
 
 # ----------------------- Create Tournament ------------------------------
 # region create
-class CreateTournamentSerializer(serializers.ModelSerializer):
+class CreateUpdateTournamentSerializer(serializers.ModelSerializer):
     name = serializers.CharField()
     start_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField()
@@ -44,6 +46,7 @@ class CreateTournamentSerializer(serializers.ModelSerializer):
     end_time = serializers.TimeField(write_only=True, required=False)
 
     not_found_players = []
+    operation_type_is_create = True
     class Meta:
         model = TournamentModel
         fields = ['name', 'participants', 'start_date', 'start_time', 'end_date', 'end_time']
@@ -70,7 +73,6 @@ class CreateTournamentSerializer(serializers.ModelSerializer):
     
 
     # ------------------------------
-
     def create(self, validated_data):
         validated_data.pop('start_time')
         validated_data.pop('end_time')
@@ -82,20 +84,35 @@ class CreateTournamentSerializer(serializers.ModelSerializer):
         tournament.participants.set(participants)
         tournament.save()
         return tournament
+    
+    # ------------------------------
+    def update(self, instance, validated_data):
+        self.operation_type_is_create = False
+        instance.name = validated_data.get('name', instance.name)
+        instance.start_date = validated_data.get('start_date', instance.start_date)
+        instance.end_date = validated_data.get('end_date', instance.end_date)
+
+        participants_data = validated_data.pop('participants')
+        participants = UserModel.objects.filter(id__in=participants_data)
+        for player in participants:
+            instance.participants.add(player)
+
+        instance.save()
+        return instance
    
 
     # ------------------------------
     def validate(self, data):
         self.not_found_players = []
         validation_error = dict()
-        name         = data['name']
+        name         = data.get('name')
         participants = data.get('participants', [])
 
 
-        start_date   = data['start_date']
-        start_time   = data['start_time']
-        end_date     = data['end_date']
-        end_time     = data['end_time']
+        start_date   = data.get('start_date')
+        start_time   = data.get('start_time')
+        end_date     = data.get('end_date')
+        end_time     = data.get('end_time')
 
 
         players = []
@@ -107,8 +124,9 @@ class CreateTournamentSerializer(serializers.ModelSerializer):
 
         data['participants'] = players 
 
-        if TournamentModel.objects.filter(name=name).exists():
+        if name and TournamentModel.objects.filter(name=name).exists():
             validation_error['name'] = "This name already exists in the tournament database! "
+
 
         if start_time and not self.is_valid_time(start_time.strftime('%H:%M:%S')):
             validation_error['start_time'] = "Invalid time format"
@@ -116,19 +134,19 @@ class CreateTournamentSerializer(serializers.ModelSerializer):
         if end_time and not self.is_valid_time(end_time.strftime('%H:%M:%S')):
             validation_error['end_time'] = "Invalid time format"
 
-        if not self.is_valid_date(start_date.strftime('%Y-%m-%d')):
-            validation_error['start_date'] = "Invalid date format"
+        if start_date:
+            if not self.is_valid_date(start_date.strftime('%Y-%m-%d')):
+                validation_error['start_date'] = "Invalid date format"
 
-        elif start_time and not validation_error.get('start_time'):
-                data['start_date'] = datetime.combine(start_date, start_time)
+            elif start_time and not validation_error.get('start_time'):
+                    data['start_date'] = datetime.combine(start_date, start_time)
 
-        if not self.is_valid_date(end_date.strftime('%Y-%m-%d')):
-            validation_error['end_date'] = "Invalid date format"
+        if end_date:
+            if not self.is_valid_date(end_date.strftime('%Y-%m-%d')):
+                validation_error['end_date'] = "Invalid date format"
 
-        elif end_time and not validation_error.get('end_time'):
-                data['end_date'] = datetime.combine(end_date, end_time)
-
-        
+            elif end_time and not validation_error.get('end_time'):
+                    data['end_date'] = datetime.combine(end_date, end_time)
         
     
         if validation_error:
@@ -142,7 +160,7 @@ class CreateTournamentSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = {
             "success": True,
-            "message": "Tournament successfully created!",
+            "message": f"Tournament successfully {'created' if self.operation_type_is_create else 'updated'} !.. ",
             "data": {
                 "name": instance.name,
                 "timing": f"{instance.start_date} ~ {instance.end_date}",
@@ -151,6 +169,26 @@ class CreateTournamentSerializer(serializers.ModelSerializer):
             }
         }        
         return data
-    
+# endregion
+
+
+
+
+# ----------------------- Create Rounds ------------------------------
+# region round
+class RoundsModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoundsModel
+        fields = [ 'tournament']
+
+    def create(self, validated_data):
+        round_instance = RoundsModel.objects.create(**validated_data)
+        round_instance.write_round_id()
+        round_instance.save()
+
+        match_generator(round_instance.tournament, round_instance)
+
+        return round_instance
+# endregion
 
     

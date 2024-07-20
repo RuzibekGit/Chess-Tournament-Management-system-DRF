@@ -8,29 +8,95 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from admin.serializers import (UserListSerializer,
                                AboutUserSerializer,
-                               CreateTournamentSerializer)
+                               CreateUpdateTournamentSerializer,
+                               RoundsModelSerializer)
 
 from shared.pagination import CustomPagination
 from users.views import return_error
-from tournament.models import TournamentModel
+from tournament.models import TournamentModel, RoundsModel
 
 
+#________________________________________________________________________ #
+# --------------------------- Tournament -------------------------------- #
+
+# region create tournament
 class CreateTournamentView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = CreateTournamentSerializer
+    serializer_class = CreateUpdateTournamentSerializer
     model = TournamentModel
 
     def post(self, request, *args, **kwargs):
         if request.user.user_role != ADMIN:
-            return return_error(message="You do not have permission to create a tournament!", http_request=status.HTTP_401_UNAUTHORIZED)
+            return return_error(
+                message="You do not have permission to create a tournament!", 
+                http_request=status.HTTP_401_UNAUTHORIZED
+                )
+        
         return super().post(request, *args, **kwargs)
+# endregion
+
+
+# region create round
+class CreateRoundView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = RoundsModelSerializer
+    model = RoundsModel
+
+    def post(self, request, *args, **kwargs):
+
+        if request.user.user_role != ADMIN:
+            return return_error(
+                message="You do not have permission to create a tournament!",
+                http_request=status.HTTP_401_UNAUTHORIZED
+            )
+
+        return super().post(request, *args, **kwargs)
+# endregion
+
+
+
+# region create tournament
+class UpdateTournamentView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CreateUpdateTournamentSerializer
+    http_method_names = ['put', 'patch']
+
+    def get_object(self):
+        if self.request.user.user_role != ADMIN:
+            return return_error(
+                message="You do not have permission to create a tournament!",
+                http_request=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        return TournamentModel.objects.get(pk=self.kwargs.get('pk'))
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)  # Call for actual update
+
+        # Return serializer's data as response
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)  # Call for actual update
+
+        return Response(serializer.data)
+
+# endregion
 
 
 
 
+# _________________________________________________________________________ #
+# --------------------------- Users Update -------------------------------- #
 
-
-
+# region users list
 class AdminListView(generics.ListAPIView):
     serializer_class = UserListSerializer
     permission_classes = [IsAuthenticated]
@@ -53,3 +119,4 @@ class AdminListView(generics.ListAPIView):
             self.pagination_class = None
             return UserModel.objects.filter(id=pk)
         return UserModel.objects.all()
+# endregion

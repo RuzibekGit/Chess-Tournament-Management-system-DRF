@@ -97,14 +97,6 @@ class SignUpSerializer(serializers.ModelSerializer):
         data.pop('confirm_password')
         return data
 
-    # ------------------------------
-    # def validate_username(self, username):
-    #     self.validation_error = dict()
-
-    #     if UserModel.objects.filter(username=username).exists():
-    #         self.validation_error['username'] =  "Username already exists"
-    #     return username
-
     
     # ------------------------------
     def validate_email(self, email):
