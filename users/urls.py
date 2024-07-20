@@ -25,5 +25,6 @@ urlpatterns = [
     path('confirm/password/', PasswordUpdateAPIView.as_view(), name='update-password'),
 
     path('update/', UserUpdateAPIView.as_view(), name='update'),
+    
 
 ]

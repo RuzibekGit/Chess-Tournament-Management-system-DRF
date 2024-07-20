@@ -125,7 +125,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     # ------------------------------
     def to_representation(self, instance):
         data = {
-            'status': True,
+            'success': True,
             'message': "Successfully registered, code sent to you email. ",
             'access_token': instance.token()['access_token'],
             'auth_status': instance.auth_status

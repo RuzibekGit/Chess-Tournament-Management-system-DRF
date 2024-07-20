@@ -153,14 +153,9 @@ class ResendVerifyCodeAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
-        try:
-            print(ConfirmationModel.objects.filter(
-                user_id=user.id).expiration_time__gte)
-        except:
-            print("Error!.... ")
+        
 
-        is_verify = UserModel.objects.filter(
-            id=user.id, auth_status=CODE_VERIFIED)
+        is_verify = UserModel.objects.filter(id=user.id, auth_status=CODE_VERIFIED)
         code_active = ConfirmationModel.objects.filter(
             is_confirmed=False,
             user_id=user.id,
