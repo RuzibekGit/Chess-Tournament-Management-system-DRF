@@ -53,9 +53,10 @@ pip install -r requirements.txt # Install Dependencies
 <img src="assets/images/Screenshot 2024-07-20 215759.png" alt="" style="height: ; width: ;">
 
 #### Also you can use my postman collection
- - Postman API documentation ```https://documenter.getpostman.com/view/36448688/2sA3kUGhfJ```
 
- - Postman Collection API Link```https://api.postman.com/collections/36448688-0f441b28-08e8-4129-83da-23d016354512?access_key=PMAT-01J38NKD864K5WT21MGHXD8SE9```
+ - Postman API  <a href="https://documenter.getpostman.com/view/36448688/2sA3kUGhfJ">documentation</a> or ⬇️
+
+ - Postman Collection API Link ```https://api.postman.com/collections/36448688-0f441b28-08e8-4129-83da-23d016354512?access_key=PMAT-01J38NKD864K5WT21MGHXD8SE9```
 
 
 ### Important!!!! 
